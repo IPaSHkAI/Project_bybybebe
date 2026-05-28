@@ -1,0 +1,10 @@
+# Игнорируем временные папки данных Docker волюмов, если они создались локально
+.data/
+postgres_data/
+minio_data/
+
+# Игнорируем системные папки Windows и редакторов кода
+.idea/
+.vscode/
+Thumbs.db
+Desktop.ini
