@@ -1,0 +1,44 @@
+services:
+  # 1. Наше S3 хранилище (MinIO) с постоянным диском
+  minio:
+    image: minio/minio:RELEASE.2023-08-29T23-07-35Z
+    container_name: lakehouse_minio
+    environment:
+      MINIO_ROOT_USER: admin
+      MINIO_ROOT_PASSWORD: password
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+    command: server /data --console-address ":9001"
+
+  # 2. База данных Postgres для метаданных
+  iceberg-db:
+    image: postgres:15
+    container_name: iceberg_catalog
+    environment:
+      POSTGRES_USER: catalog_user
+      POSTGRES_PASSWORD: catalog_password
+      POSTGRES_DB: catalog_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-postgres.sql:/docker-entrypoint-initdb.d/init-postgres.sql
+
+  # 3. Наш SQL-движок Trino
+  trino:
+    image: trinodb/trino:422
+    container_name: lakehouse_trino
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./trino/catalog:/etc/trino/catalog
+    depends_on:
+      - minio
+      - iceberg-db
+
+volumes:
+  minio_data:
+  postgres_data:
