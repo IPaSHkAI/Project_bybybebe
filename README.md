@@ -20,7 +20,8 @@
 git clone <ссылка_на_этот_репозиторий>
 cd <имя_папки_проекта>
 docker-compose up -d
-Служебные таблицы для Iceberg в PostgreSQL развернутся автоматически при первом старте благодаря скрипту init-postgres.sql.```
+Служебные таблицы для Iceberg в PostgreSQL развернутся автоматически при первом старте благодаря скрипту init-postgres.sql.
+```
 
 2. Создание S3 Бакетa
 Перейдите в веб-консоль MinIO: http://localhost:9001
@@ -45,7 +46,7 @@ Password: (оставить пустым)
 📊 Проверка работоспособности (Smoke Test)
 Выполните в SQL-редакторе DBeaver следующие запросы по очереди:
 
-SQL
+```SQL
 -- 1. Создание схемы данных
 CREATE SCHEMA iceberg.web_analytics 
 WITH (location = 's3a://lakehouse/web_analytics');
@@ -70,6 +71,7 @@ INSERT INTO iceberg.web_analytics.clicks VALUES
 
 -- 4. Чтение данных
 SELECT * FROM iceberg.web_analytics.clicks;
+```
 💾 Персистентность данных
 Все данные таблиц (Parquet-файлы и Avro-манифесты) сохраняются локально в Docker Volume minio_data. Метаданные каталога лежат в postgres_data. Ваши данные не пропадут после команды docker-compose down.
 
